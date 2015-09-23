@@ -1,48 +1,50 @@
-class Disp extends AFP{
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
+
+class Disp extends JFrame{
   XML mapData;
   int eventSize;
   String[] eventName;
-  Label[] label;
+  JLabel label[];
+  JPanel eventSelect;
+  JPanel eventStats;
+  JPanel commandSelect;
   Disp(int mapId){
-    super(null,"XMLeditor",200,200,720,500);
-    selectEvent(mapId);
-    eventStats(mapId,0);
-  }
-  void selectEvent(int mapId){
-    mapData=loadXML("mapData.XML").getChildren("map")[mapId];
-    eventSize=mapData.getChildren("event").length;
-    eventName =new String[eventSize];
     
-    label("マップイベント一覧",0,0,120,15);
-    
-    JPanel panel=panel(0,15,130,height-100);
-    panel.setBorder(new CompoundBorder(
-      new BevelBorder(BevelBorder.RAISED),  //外側
-      new BevelBorder(BevelBorder.LOWERED)  //内側
-    ));
-    
-    label =new Label[eventSize];
-    for(int i=0;i<eventSize;i++){
-      println(eventName[i]);
-      eventName[i]=mapData.getChildren("event")[i].getString("name");
-      label[i]=label(i+":"+eventName[i],5,i*10+5,120,15);
-      panel.add(label[i]);
-    }
+    setBounds(200,200,720,500);
+    setLayout(new BorderLayout());
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    partition();
+    setTitle("XMLEditer");
+    setVisible(true);
+    repaint();
   }
   
-  void eventStats(int mapId,int eventId){
-    label("名前",130,10,30,15);
-    TextField name=textField("あああ",160,5,100,20);
-    Button newPage=button("新規ページ",260,7,80,18);
-    Button copy=button("コピー",350,7,40,18);
-    Button delite=button("削除",390,7,40,18);
-    Button paste=button("ﾍﾟｰｽﾄ",430,7,40,18);
-    Button[] page =new Button[10];
-    for(int i=0;i<10;i++){
-      if(i<4)page[i]=button("ページ"+(i+1),190+i*45,40,45,18);
-      if(i>=4)page[i]=button(String.valueOf(i+1),290+i*20,40,20,18);
-    }
-    JPanel panel=panel(140,40,400,height-80);
-    panel.setBorder(new TitledBorder(new EtchedBorder(),"ページ"));
+  void partition(){
+    eventSelect=new JPanel();//サイズ固定
+    eventStats=new JPanel();//サイズ固定
+    commandSelect=new JPanel();//サイズ可変
+    
+    eventSelect.setBackground(Color.blue);
+    eventStats.setBackground(Color.red);
+    commandSelect.setBackground(Color.yellow);
+    
+    JPanel panel=new JPanel();
+    panel.setPreferredSize(new Dimension(500,0));
+    panel.setLayout(new BorderLayout());
+    eventSelect.setPreferredSize(new Dimension(150,0));
+    panel.add(eventSelect,BorderLayout.LINE_START);
+    
+    panel.add(eventStats,BorderLayout.CENTER);
+    add(panel,BorderLayout.LINE_START);
+    add(commandSelect,BorderLayout.CENTER);
+    
+    eventSelect(0,eventSelect);
+  }
+  void eventSelect(int mapId,JPanel panel){
+    JLabel label =new JLabel("マップイベント一覧");
+    panel.add(label);
   }
 }
